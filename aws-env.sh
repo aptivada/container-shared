@@ -48,9 +48,12 @@ main() {
     local service=$2
 
     local shared_constants=$(get_env_vars_by_path /ecs/shared/constants)  # shared across all services and environments.
+    local service_constants=$(get_env_vars_by_path /ecs/$service/constants)  # shared across all services and environments.
+
     local shared_env_vars=$(get_env_vars_by_path /ecs/shared/$environment) # shared across all services within a specific environment.
     local service_env_vars=$(get_env_vars_by_path /ecs/$service/$environment) # scoped to a single service and environment.
-    local merged=$(merge_env_vars "$shared_constants" "$shared_env_vars" "$service_env_vars")
+
+    local merged=$(merge_env_vars "$shared_constants" "$service_constants" "$shared_env_vars" "$service_env_vars")
     set_env_vars "$merged"
 }
 
